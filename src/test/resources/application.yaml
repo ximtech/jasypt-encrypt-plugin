@@ -1,0 +1,8 @@
+some:
+  very:
+    secret:
+      property: ENCRYPT("private")
+
+not:
+  secret:
+    property: "public"

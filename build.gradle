@@ -1,0 +1,65 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '1.1.0'
+}
+
+group 'com.github.ximtech.jasypt-encrypt-plugin'
+version '1.0.0'
+
+gradlePlugin {
+    website = 'https://github.com/ximtech'
+    vcsUrl = 'https://github.com/ximtech/jasypt-encrypt-plugin'
+    plugins {
+        jasyptGradlePlugin {
+            id = 'com.github.ximtech.jasypt-encrypt-plugin'
+            displayName = 'Jasypt Encrypt Plugin'
+            description = 'Property and Yaml encryption/decryption with configuration'
+            tags.set(['jasypt', 'encrypt', 'decrypt', 'properties', 'yaml'])
+            implementationClass = 'com.github.jasypt.encrypt.JasyptPlugin'
+        }
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    // configuration that holds jars to include in the jar
+    includeLibrary
+}
+
+dependencies {
+    includeLibrary 'org.jasypt:jasypt:1.9.3'
+    includeLibrary 'com.tvd12:properties-file:1.1.8'
+    // Testing, Spock, Groovy
+    testImplementation "org.codehaus.groovy:groovy-all:3.0.13"
+    testImplementation "org.spockframework:spock-core:2.3-groovy-3.0"
+    configurations.implementation.extendsFrom(configurations.includeLibrary)
+}
+
+jar {
+    enabled = true
+    java
+    from {
+        configurations.includeLibrary.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    javadoc {
+        enabled = false
+    }
+}
+
+test {
+    useJUnitPlatform()
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+tasks.withType(Test) {
+    jvmArgs('--add-opens=java.base/java.lang=ALL-UNNAMED')
+}
