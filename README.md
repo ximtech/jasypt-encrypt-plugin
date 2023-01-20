@@ -1,6 +1,7 @@
 # Jasypt gradle plugin
 
 [![build](https://github.com/ximtech/jasypt-encrypt-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/ximtech/jasypt-encrypt-plugin/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/ximtech/jasypt-gradle-plugin/branch/main/graph/badge.svg?token=sHBgjzjp5Y)](https://codecov.io/gh/ximtech/jasypt-gradle-plugin)
 
 Based on [moberwasserlechner/jasypt-gradle-plugin](https://github.com/moberwasserlechner/jasypt-gradle-plugin)
 
