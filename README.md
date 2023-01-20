@@ -7,7 +7,7 @@ with `Spring Boot`, but also can work independently. With provided `password` as
 data from direct reading and decrypt them at runtime. Can be useful for data that don't need to be changed frequently
 and also allow reduce parameters or system environment variables amount passing to the docker container.
 
-### How to use
+## How to use
 
 ### Using plugins DSL
 

@@ -4,7 +4,7 @@ plugins {
     id 'com.gradle.plugin-publish' version '1.1.0'
 }
 
-group 'com.github.ximtech.jasypt-encrypt-plugin'
+group 'io.github.ximtech.jasypt-encrypt-plugin'
 version '1.0.0'
 
 gradlePlugin {
@@ -12,7 +12,7 @@ gradlePlugin {
     vcsUrl = 'https://github.com/ximtech/jasypt-encrypt-plugin'
     plugins {
         jasyptGradlePlugin {
-            id = 'com.github.ximtech.jasypt-encrypt-plugin'
+            id = 'io.github.ximtech.jasypt-encrypt-plugin'
             displayName = 'Jasypt Encrypt Plugin'
             description = 'Property and Yaml encryption/decryption with configuration'
             tags.set(['jasypt', 'encrypt', 'decrypt', 'properties', 'yaml'])
