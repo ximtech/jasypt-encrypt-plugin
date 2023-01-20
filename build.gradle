@@ -1,5 +1,6 @@
 plugins {
     id 'groovy'
+    id 'jacoco'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '1.1.0'
 }
@@ -62,4 +63,17 @@ test {
 
 tasks.withType(Test) {
     jvmArgs('--add-opens=java.base/java.lang=ALL-UNNAMED')
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+    dependsOn test // tests are required to run before generating the report
 }
