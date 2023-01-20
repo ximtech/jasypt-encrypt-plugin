@@ -1,4 +1,4 @@
-name: Gradle Plugin Build CI 
+name: build 
 
 on:
   push:
