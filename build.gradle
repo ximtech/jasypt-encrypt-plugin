@@ -6,11 +6,14 @@ plugins {
 }
 
 group 'io.github.ximtech.jasypt-encrypt-plugin'
-version '1.0.0'
+version '1.0.1'
+
+pluginBundle {
+    website = 'https://github.com/ximtech/jasypt-encrypt-plugin'
+    vcsUrl = 'https://github.com/ximtech/jasypt-encrypt-plugin'
+}
 
 gradlePlugin {
-    website = 'https://github.com/ximtech'
-    vcsUrl = 'https://github.com/ximtech/jasypt-encrypt-plugin'
     plugins {
         jasyptGradlePlugin {
             id = 'io.github.ximtech.jasypt-encrypt-plugin'

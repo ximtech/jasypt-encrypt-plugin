@@ -14,8 +14,12 @@ and also allow reduce parameters or system environment variables amount passing 
 
 ### Using plugins DSL
 
+Check latest version at [Gradle repository](https://plugins.gradle.org/plugin/io.github.ximtech.jasypt-encrypt-plugin)
+
 ```groovy
-// TODO: add plugin id
+plugins {
+    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.0.0"
+}
 ```
 
 #### Manually add to project
@@ -41,8 +45,8 @@ apply plugin: com.github.jasypt.encrypt.JasyptPlugin
 
 ***NOTE:*** This section can be skipped if default configuration is ok for you.
 
-For custom encryption configuration add `.yaml` or`.properties` file in the project root In Spring Boot application
-just add `Jasypt` configuration to `application.yaml`
+For custom encryption configuration add `.yaml` or`.properties` file in the project root In Spring Boot application just
+add `Jasypt` configuration to `application.yaml`
 
 Example:
 
