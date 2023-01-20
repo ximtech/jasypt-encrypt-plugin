@@ -38,8 +38,8 @@ apply plugin: com.github.jasypt.encrypt.JasyptPlugin
 
 ***NOTE:*** This section can be skipped if default configuration is ok for you.
 
-- For custom encryption configuration add `.yaml` or`.properties` file in the project root In Spring Boot application
-  just add `Jasypt` configuration to `application.yaml`
+For custom encryption configuration add `.yaml` or`.properties` file in the project root In Spring Boot application
+just add `Jasypt` configuration to `application.yaml`
 
 Example:
 
