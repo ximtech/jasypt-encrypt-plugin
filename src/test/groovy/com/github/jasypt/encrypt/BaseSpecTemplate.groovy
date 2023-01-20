@@ -8,15 +8,6 @@ import java.util.regex.Pattern
 
 class BaseSpecTemplate extends Specification {
 
-    static final def OUT_MESSAGE =
-                    'No of files found: 4' +
-                    'No of values changed: 2' +
-                    'Files processed:' +
-                    '[application.properties]' +
-                    '[application.yaml]' +
-                    '[config.yaml]' +
-                    '[file-access.properties]'
-
     static final ByteArrayOutputStream OUT_CONTENT = new ByteArrayOutputStream()
 
     @Before
@@ -43,5 +34,16 @@ class BaseSpecTemplate extends Specification {
             File target = new File(dirTo, source.getName());
             copyDirectory(source, target)
         }
+    }
+
+    static boolean checkOutMessage() {
+        def str = OUT_CONTENT.toString().replaceAll(NEW_LINE_REGEX, "")
+        return str.contains('No of files found: 4') &&
+        str.contains('No of values changed: 2') &&
+        str.contains('Files processed:') &&
+        str.contains('[application.properties]') &&
+        str.contains('[application.yaml]') &&
+        str.contains('[config.yaml]') &&
+        str.contains('[file-access.properties]')
     }
 }

@@ -42,8 +42,7 @@ class PropertiesEncryptSpec extends BaseSpecTemplate {
         props.get('not.secret.property') == 'public'
 
         and: "Check console output"
-        def str = OUT_CONTENT.toString().replaceAll(NEW_LINE_REGEX, "")
-        str == OUT_MESSAGE
+        checkOutMessage()
     }
 
 }

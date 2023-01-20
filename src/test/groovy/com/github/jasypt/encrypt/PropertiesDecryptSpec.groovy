@@ -23,7 +23,7 @@ class PropertiesDecryptSpec extends BaseSpecTemplate {
         encryptPropsTask.taskAction()
 
         then: "Check console output"
-        OUT_CONTENT.toString().replaceAll(NEW_LINE_REGEX, "") == OUT_MESSAGE
+        checkOutMessage()
         OUT_CONTENT.reset()
 
         when: "Decode parameters"
@@ -41,6 +41,6 @@ class PropertiesDecryptSpec extends BaseSpecTemplate {
         props.get('not.secret.property') == 'public'
 
         and: "Check console output"
-        OUT_CONTENT.toString().replaceAll(NEW_LINE_REGEX, "") == OUT_MESSAGE
+        checkOutMessage()
     }
 }
