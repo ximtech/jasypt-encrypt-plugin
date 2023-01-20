@@ -1,5 +1,7 @@
 # Jasypt gradle plugin
 
+[![build](https://github.com/ximtech/jasypt-encrypt-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/ximtech/jasypt-encrypt-plugin/actions/workflows/build.yml)
+
 Based on [moberwasserlechner/jasypt-gradle-plugin](https://github.com/moberwasserlechner/jasypt-gradle-plugin)
 
 This plugin uses [Jasypt](http://jasypt.org/) library for encrypting/decrypting application properties. Works great
