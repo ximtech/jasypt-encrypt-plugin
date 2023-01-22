@@ -18,7 +18,7 @@ Check latest version at [Gradle repository](https://plugins.gradle.org/plugin/io
 
 ```groovy
 plugins {
-    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.0.0"
+    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.0.1"
 }
 ```
 
@@ -99,6 +99,14 @@ decryptProperties {
 jar {
     dependsOn(encryptProperties)
 }
+```
+
+### CI/CD pipeline
+
+For running project in pipeline, add `JASYPT_ENCRYPTOR_PASSWORD` system environment variable in build configuration
+```yaml
+env:
+  JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 ```
 
 ## Tasks
