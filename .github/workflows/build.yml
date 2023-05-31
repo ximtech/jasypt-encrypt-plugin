@@ -25,7 +25,7 @@ jobs:
         cache: 'gradle'
 
     - name: Build And Test With Gradle
-      run: gradlew clean jacocoTestReport --info
+      run: ./gradlew clean jacocoTestReport --info
     
     - name: Code Coverage Report
       uses: codecov/codecov-action@v3
