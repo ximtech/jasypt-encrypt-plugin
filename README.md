@@ -18,7 +18,7 @@ Check latest version at [Gradle repository](https://plugins.gradle.org/plugin/io
 
 ```groovy
 plugins {
-    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.0.1"
+    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.0.2"
 }
 ```
 
@@ -30,7 +30,7 @@ plugins {
 ```groovy
 buildscript {
     dependencies {
-        classpath files('jasypt-encrypt-plugin-1.0.0.jar')
+        classpath files('jasypt-encrypt-plugin-1.0.2.jar')
     }
 }
 ```
