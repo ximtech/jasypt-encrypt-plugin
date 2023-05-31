@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
 
     private static final String PROPERTIES_PATTERN = ".*\\.properties|.*\\.yaml";
-    private static final Set<String> EXCLUDED_DIRECTORIES = Set.of(".gradle", "build", "out", "target", ".idea", "gradle");
-
+    private static final Set<String> EXCLUDED_DIRECTORIES = new HashSet<>(Arrays.asList(".gradle", "build", "out", "target", ".idea", "gradle"));
+    
     private Pattern valueExtractorPattern;
     private String fileFilterPattern;
 
