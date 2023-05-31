@@ -24,8 +24,11 @@ jobs:
         distribution: 'zulu'
         cache: 'gradle'
 
-    - name: Build And Test With Gradle
-      run: gradle clean jacocoTestReport --info --stacktrace
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    
+    - name: Build And Test With Gradle Wrapper
+      run: ./gradlew clean jacocoTestReport --info --stacktrace
     
     - name: Code Coverage Report
       uses: codecov/codecov-action@v3
