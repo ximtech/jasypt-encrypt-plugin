@@ -12,7 +12,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -23,9 +23,12 @@ jobs:
         java-version: '17'
         distribution: 'zulu'
         cache: 'gradle'
+        
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v3
 
-    - name: Build And Test With Gradle
-      run: gradle clean jacocoTestReport --info --stacktrace
+    - name: Build And Test With Gradle Wrapper
+      run: ./gradlew clean jacocoTestReport --info --stacktrace
     
     - name: Code Coverage Report
       uses: codecov/codecov-action@v3
