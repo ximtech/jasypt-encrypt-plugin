@@ -8,7 +8,7 @@ Based on [moberwasserlechner/jasypt-gradle-plugin](https://github.com/moberwasse
 This plugin uses [Jasypt](http://jasypt.org/) library for encrypting/decrypting application properties. Works great
 with `Spring Boot`, but also can work independently. With provided `password` as encryption key plugin hides sensitive
 data from direct reading and decrypt them at runtime. Can be useful for data that don't need to be changed frequently
-and also allow reduce parameters or system environment variables amount passing to the docker container.
+and also allow reducing parameters or system environment variables amount passing to the docker container.
 
 ## How to use
 
