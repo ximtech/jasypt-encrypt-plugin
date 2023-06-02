@@ -116,7 +116,7 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
                     Objects.requireNonNull(file);
                     Objects.requireNonNull(attrs);
                     if (attrs.isRegularFile()
-                        && PATTERN.matcher(file.getFileName().toString()).matches()
+                        && PROPERTIES_PATTERN.matcher(file.getFileName().toString()).matches()
                         && (fileFilterPattern == null || file.getFileName().toString().matches(fileFilterPattern))) {
                         propertyPaths.add(file);
                     }
