@@ -11,9 +11,12 @@ import org.slf4j.Marker;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +27,7 @@ import java.util.stream.Stream;
 
 public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
 
-    private static final String PROPERTIES_PATTERN = ".*\\.properties|.*\\.yaml";
+    private static final Pattern PROPERTIES_PATTERN = Pattern.compile(".*\\.properties|.*\\.yaml");
     private static final Set<String> EXCLUDED_DIRECTORIES = new HashSet<>(Arrays.asList(".gradle", "build", "out", "target", ".idea", "gradle"));
     
     private Pattern valueExtractorPattern;
@@ -89,22 +92,49 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
 
     private List<Path> listApplicationPropertyPaths() {
         Path rootPath = Paths.get(getProject().getRootDir().toURI());
-        try (Stream<Path> walk = Files.walk(rootPath)) {
-            return walk.filter(Files::isRegularFile)
-                    .filter((Path path) -> isNotInExcludePath(rootPath, path))
-                    .filter((Path path) -> path.getFileName().toString().matches(PROPERTIES_PATTERN))
-                    .filter((Path path) -> fileFilterPattern == null || path.getFileName().toString().matches(fileFilterPattern))
-                    .collect(Collectors.toList());
+        List<Path> propertyPaths = new ArrayList<>();
+        try {
+            Files.walkFileTree(rootPath, new FileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    Objects.requireNonNull(dir);
+                    Objects.requireNonNull(attrs);
+                    if (EXCLUDED_DIRECTORIES.contains(dir.getFileName().toString())) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Objects.requireNonNull(file);
+                    Objects.requireNonNull(attrs);
+                    if (attrs.isRegularFile()
+                        && PATTERN.matcher(file.getFileName().toString()).matches()
+                        && (fileFilterPattern == null || file.getFileName().toString().matches(fileFilterPattern))) {
+                        propertyPaths.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    Objects.requireNonNull(file);
+                    getLogger().error(Marker.ANY_MARKER, exc);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Objects.requireNonNull(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
 
         } catch (IOException e) {
             getLogger().error(Marker.ANY_MARKER, e);
         }
-        return Collections.emptyList();
-    }
-
-    private boolean isNotInExcludePath(Path rootPath, Path path) {
-        return EXCLUDED_DIRECTORIES.stream()
-                .noneMatch((String excludedDirectory) -> path.startsWith(rootPath.resolve(excludedDirectory)));
+        return propertyPaths;
     }
 
     private Pattern getValueExtractorPattern() {
