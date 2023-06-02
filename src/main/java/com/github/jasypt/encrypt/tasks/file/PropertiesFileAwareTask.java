@@ -9,7 +9,10 @@ import com.github.jasypt.encrypt.tasks.PasswordAwareTask;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.slf4j.Marker;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -23,11 +26,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
 
-    private static final Pattern PROPERTIES_PATTERN = Pattern.compile(".*\\.properties|.*\\.yaml");
+    private static final Pattern PROPERTIES_PATTERN = Pattern.compile(".*\\.properties|.*\\.ya?ml");
     private static final Set<String> EXCLUDED_DIRECTORIES = new HashSet<>(Arrays.asList(".gradle", "build", "out", "target", ".idea", "gradle"));
     
     private Pattern valueExtractorPattern;
@@ -52,20 +54,24 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
             AtomicInteger encryptedLinesCount = new AtomicInteger();
             PBEStringEncryptor encryptor = resolvePropertyEncryptor(matchingPaths);
             for (Path matching : matchingPaths) {
-                List<String> allLines = Files.readAllLines(matching, StandardCharsets.UTF_8);
+                List<String> allLines;
                 AtomicBoolean haveValueToEncrypt = new AtomicBoolean(false);
-                allLines.replaceAll((String line) -> {
-                    Matcher matcher = getValueExtractorPattern().matcher(line);
-                    if (matcher.find()) {
-                        String extractedValue = matcher.group(1);
-                        String matchGroup = matcher.group();
-                        String encryptedValue = getPropertyPrefix() + process(encryptor, extractedValue) + getPropertySuffix();
-                        encryptedLinesCount.getAndIncrement();
-                        haveValueToEncrypt.set(true);
-                        return line.replace(matchGroup, encryptedValue);
-                    }
-                    return line;
-                });
+                try (FileInputStream fis = new FileInputStream(matching.toFile());
+                        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                        BufferedReader br = new BufferedReader(isr)) {
+                    allLines = br.lines().map((String line) -> {
+                        Matcher matcher = getValueExtractorPattern().matcher(line);
+                        if (matcher.find()) {
+                            String extractedValue = matcher.group(1);
+                            String matchGroup = matcher.group();
+                            String encryptedValue = getPropertyPrefix() + process(encryptor, extractedValue) + getPropertySuffix();
+                            encryptedLinesCount.getAndIncrement();
+                            haveValueToEncrypt.set(true);
+                            return line.replace(matchGroup, encryptedValue);
+                        }
+                        return line;
+                    }).collect(Collectors.toList());
+                }
 
                 if (haveValueToEncrypt.get()) {
                     Files.write(matching, allLines, StandardCharsets.UTF_8);
