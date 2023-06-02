@@ -102,7 +102,7 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
         try {
             Files.walkFileTree(rootPath, new FileVisitor<Path>() {
                 @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                     Objects.requireNonNull(dir);
                     Objects.requireNonNull(attrs);
                     if (EXCLUDED_DIRECTORIES.contains(dir.getFileName().toString())) {
@@ -112,7 +112,7 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
                 }
 
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     Objects.requireNonNull(file);
                     Objects.requireNonNull(attrs);
                     if (attrs.isRegularFile()
@@ -124,14 +124,14 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
                 }
 
                 @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
                     Objects.requireNonNull(file);
                     getLogger().error(Marker.ANY_MARKER, exc);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
                     Objects.requireNonNull(dir);
                     return FileVisitResult.CONTINUE;
                 }
