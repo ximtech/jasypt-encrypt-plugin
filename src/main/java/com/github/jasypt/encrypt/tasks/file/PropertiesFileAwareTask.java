@@ -9,22 +9,27 @@ import com.github.jasypt.encrypt.tasks.PasswordAwareTask;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.slf4j.Marker;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
 
-    private static final String PROPERTIES_PATTERN = ".*\\.properties|.*\\.yaml";
+    private static final Pattern PROPERTIES_PATTERN = Pattern.compile(".*\\.properties|.*\\.ya?ml");
     private static final Set<String> EXCLUDED_DIRECTORIES = new HashSet<>(Arrays.asList(".gradle", "build", "out", "target", ".idea", "gradle"));
     
     private Pattern valueExtractorPattern;
@@ -49,20 +54,24 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
             AtomicInteger encryptedLinesCount = new AtomicInteger();
             PBEStringEncryptor encryptor = resolvePropertyEncryptor(matchingPaths);
             for (Path matching : matchingPaths) {
-                List<String> allLines = Files.readAllLines(matching, StandardCharsets.UTF_8);
+                List<String> allLines;
                 AtomicBoolean haveValueToEncrypt = new AtomicBoolean(false);
-                allLines.replaceAll((String line) -> {
-                    Matcher matcher = getValueExtractorPattern().matcher(line);
-                    if (matcher.find()) {
-                        String extractedValue = matcher.group(1);
-                        String matchGroup = matcher.group();
-                        String encryptedValue = getPropertyPrefix() + process(encryptor, extractedValue) + getPropertySuffix();
-                        encryptedLinesCount.getAndIncrement();
-                        haveValueToEncrypt.set(true);
-                        return line.replace(matchGroup, encryptedValue);
-                    }
-                    return line;
-                });
+                try (FileInputStream fis = new FileInputStream(matching.toFile());
+                        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                        BufferedReader br = new BufferedReader(isr)) {
+                    allLines = br.lines().map((String line) -> {
+                        Matcher matcher = getValueExtractorPattern().matcher(line);
+                        if (matcher.find()) {
+                            String extractedValue = matcher.group(1);
+                            String matchGroup = matcher.group();
+                            String encryptedValue = getPropertyPrefix() + process(encryptor, extractedValue) + getPropertySuffix();
+                            encryptedLinesCount.getAndIncrement();
+                            haveValueToEncrypt.set(true);
+                            return line.replace(matchGroup, encryptedValue);
+                        }
+                        return line;
+                    }).collect(Collectors.toList());
+                }
 
                 if (haveValueToEncrypt.get()) {
                     Files.write(matching, allLines, StandardCharsets.UTF_8);
@@ -89,22 +98,49 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
 
     private List<Path> listApplicationPropertyPaths() {
         Path rootPath = Paths.get(getProject().getRootDir().toURI());
-        try (Stream<Path> walk = Files.walk(rootPath)) {
-            return walk.filter(Files::isRegularFile)
-                    .filter((Path path) -> isNotInExcludePath(rootPath, path))
-                    .filter((Path path) -> path.getFileName().toString().matches(PROPERTIES_PATTERN))
-                    .filter((Path path) -> fileFilterPattern == null || path.getFileName().toString().matches(fileFilterPattern))
-                    .collect(Collectors.toList());
+        List<Path> propertyPaths = new ArrayList<>();
+        try {
+            Files.walkFileTree(rootPath, new FileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                    Objects.requireNonNull(dir);
+                    Objects.requireNonNull(attrs);
+                    if (EXCLUDED_DIRECTORIES.contains(dir.getFileName().toString())) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    Objects.requireNonNull(file);
+                    Objects.requireNonNull(attrs);
+                    if (attrs.isRegularFile()
+                        && PROPERTIES_PATTERN.matcher(file.getFileName().toString()).matches()
+                        && (fileFilterPattern == null || file.getFileName().toString().matches(fileFilterPattern))) {
+                        propertyPaths.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                    Objects.requireNonNull(file);
+                    getLogger().error(Marker.ANY_MARKER, exc);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                    Objects.requireNonNull(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
 
         } catch (IOException e) {
             getLogger().error(Marker.ANY_MARKER, e);
         }
-        return Collections.emptyList();
-    }
-
-    private boolean isNotInExcludePath(Path rootPath, Path path) {
-        return EXCLUDED_DIRECTORIES.stream()
-                .noneMatch((String excludedDirectory) -> path.startsWith(rootPath.resolve(excludedDirectory)));
+        return propertyPaths;
     }
 
     private Pattern getValueExtractorPattern() {
