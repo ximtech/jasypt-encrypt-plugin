@@ -34,13 +34,21 @@ class PropertiesEncryptSpec extends BaseSpecTemplate {
 
         and: "Check encrypted values"
         def yaml = new MultiFileReader().read(new File(project.getRootDir(), "application.yaml"))
+        yaml.size() == 5
         yaml.get('some.very.secret.property') == 'ENC(Lk5VWETH98C0/E/wOqzioQ==)'
         yaml.get('not.secret.property') == 'public'
-
+        yaml.get('multiline.property').replaceAll(' ', '') == 'ENC(IRAUw1D6zFD9nhH6dokZajLnT1/2Sezo)'
+        yaml.get('not-encrypted-multiline') == 'one two three four'
+        yaml.get('multiline.other.one.line.property') == 'same indentation'
+        
         def props = new MultiFileReader().read(new File(project.getRootDir(), "application.properties"))
-        props.get('some.very.secret.property') == 'ENC(Lk5VWETH98C0/E/wOqzioQ==)'
+        props.size() == 5
+        props.get('some.very.secret.property') == 'ENC(XhdGs2swfAc=)'
         props.get('not.secret.property') == 'public'
-
+        props.get('multiline.encryption') == 'ENC(RmMY3yVLNpU6tnFBa9GNDF8HgwysT+tl)'
+        props.get('multiline.encryption') == props.get('in.one.line')
+        props.get('not.secret.multiline') == 'somemultilinevalue'
+        
         and: "Check console output"
         checkOutMessage()
     }

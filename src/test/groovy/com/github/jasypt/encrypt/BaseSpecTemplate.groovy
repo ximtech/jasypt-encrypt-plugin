@@ -39,7 +39,7 @@ class BaseSpecTemplate extends Specification {
     static boolean checkOutMessage() {
         def str = OUT_CONTENT.toString().replaceAll(NEW_LINE_REGEX, "")
         return str.contains('No of files found: 4') &&
-        str.contains('No of values changed: 2') &&
+        str.contains('No of values changed: 5') &&
         str.contains('Files processed:') &&
         str.contains('[application.properties]') &&
         str.contains('[application.yaml]') &&

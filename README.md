@@ -19,7 +19,7 @@ Check latest version at [Gradle repository](https://plugins.gradle.org/plugin/io
 
 ```groovy
 plugins {
-    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.1.3"
+    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.3.3"
 }
 ```
 
@@ -31,7 +31,7 @@ plugins {
 ```groovy
 buildscript {
     dependencies {
-        classpath files('jasypt-encrypt-plugin-1.1.3.jar')
+        classpath files('jasypt-encrypt-plugin-1.3.3.jar')
     }
 }
 ```
@@ -139,6 +139,31 @@ encrypt their values.
 
 ```text
 gradle encryptProperties --file-filter-pattern='application-((?!prod).*)\.yaml' --password=encryptorToken
+```
+
+#### Multiline properties
+
+Sometimes there is need to encrypt value strings on multiple lines.
+- ***Yaml file example:***
+```yaml
+multiline.property: |
+    ENCRYPT(
+    some
+    very
+    long
+    text
+    )
+```
+***NOTE:*** For the `yaml` file the indentation level should be the same for all multiline values. Also the pipe character '|' must be present on the first line,
+otherwise encryption/decryption won't work correctly.
+
+- ***Properties file:***
+```properties
+multiline.property=\
+  ENCRYPT(\
+  example\
+  multiline\
+  )
 ```
 
 ### decryptProperties

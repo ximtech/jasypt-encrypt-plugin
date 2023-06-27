@@ -6,3 +6,23 @@ some:
 not:
   secret:
     property: "public"
+
+multiline:
+  property: |
+        ENCRYPT(
+        some
+        multiline
+        text
+        some
+        )
+  
+  other:
+    one:
+      line:
+        property: "same indentation"
+
+not-encrypted-multiline: |
+                      one
+                      two
+                      three
+                      four
