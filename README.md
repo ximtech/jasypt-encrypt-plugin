@@ -143,7 +143,6 @@ gradle encryptProperties --file-filter-pattern='application-((?!prod).*)\.yaml' 
 
 #### Multiline properties
 
-Sometimes there is need to encrypt value strings on multiple lines.
 - ***Yaml file example:***
 ```yaml
 multiline.property: |
