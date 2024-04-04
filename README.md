@@ -39,7 +39,7 @@ buildscript {
 Add plugin:
 
 ```groovy
-apply plugin: com.github.jasypt.encrypt.JasyptPlugin
+apply plugin: io.github.jasypt.encrypt.JasyptPlugin
 ```
 
 ### Jasypt configuration
