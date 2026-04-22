@@ -179,7 +179,7 @@ public abstract class PropertiesFileAwareTask extends PasswordAwareTask {
     private void logProcessedStatus(List<Path> matchingPaths, AtomicInteger encryptedLinesCount) {
         System.out.println("No of files found: " + matchingPaths.size());
         System.out.println("No of values changed: " + encryptedLinesCount.get());
-        if (matchingPaths.size() > 0) {
+        if (!matchingPaths.isEmpty()) {
             String filesProcessed = matchingPaths.stream()
                     .map((Path path) -> path.getFileName().toString())
                     .map((String fileName) -> "[" + fileName + "]")

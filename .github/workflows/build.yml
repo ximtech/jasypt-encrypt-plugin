@@ -29,6 +29,9 @@ jobs:
     
     - name: Build And Test With Gradle Wrapper
       run: ./gradlew clean jacocoTestReport --info --stacktrace
+      
+    - name: Create Gradle Release
+      run: ./gradlew release --info --stacktrace
     
     - name: Code Coverage Report
       uses: codecov/codecov-action@v3
