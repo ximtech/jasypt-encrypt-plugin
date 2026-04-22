@@ -20,15 +20,18 @@ jobs:
       with: 
         fetch-depth: 0   # fetch full history + tags
     
-    - name: Set up JDK 17
+    - name: Set Up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'zulu'
         cache: 'gradle'
 
-    - name: Make gradlew executable
+    - name: Make Gradlew Executable
       run: chmod +x ./gradlew
+      
+    - name: Show Previous Version
+      run: ./gradlew currentVersion
     
     - name: Build And Test With Gradle Wrapper
       run: ./gradlew clean jacocoTestReport --info --stacktrace
