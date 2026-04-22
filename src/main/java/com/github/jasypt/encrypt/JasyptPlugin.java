@@ -19,10 +19,10 @@ public class JasyptPlugin implements Plugin<Project> {
     public void apply(Project project) {
         verifyGradleVersion();
 
-        project.getTasks().create(EncryptPropertiesFileTask.TASK_NAME, EncryptPropertiesFileTask.class);
-        project.getTasks().create(DecryptPropertiesFileTask.TASK_NAME, DecryptPropertiesFileTask.class);
-        project.getTasks().create(EncryptTextTask.TASK_NAME, EncryptTextTask.class);
-        project.getTasks().create(DecryptTextTask.TASK_NAME, DecryptTextTask.class);
+        project.getTasks().register(EncryptPropertiesFileTask.TASK_NAME, EncryptPropertiesFileTask.class);
+        project.getTasks().register(DecryptPropertiesFileTask.TASK_NAME, DecryptPropertiesFileTask.class);
+        project.getTasks().register(EncryptTextTask.TASK_NAME, EncryptTextTask.class);
+        project.getTasks().register(DecryptTextTask.TASK_NAME, DecryptTextTask.class);
     }
 
     private void verifyGradleVersion() {

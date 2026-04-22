@@ -6,13 +6,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.21.1'
 }
 
-group 'io.github.ximtech.jasypt-encrypt-plugin'
-
-pluginBundle {
-    website = 'https://github.com/ximtech/jasypt-encrypt-plugin'
-    vcsUrl = 'https://github.com/ximtech/jasypt-encrypt-plugin'
-    tags = ['jasypt', 'encrypt', 'decrypt', 'properties', 'yaml']
-}
+group = 'io.github.ximtech.jasypt-encrypt-plugin'
 
 gradlePlugin {
     plugins {
@@ -21,8 +15,11 @@ gradlePlugin {
             displayName = 'Jasypt Encrypt Plugin'
             description = 'Property and Yaml encryption/decryption with configuration'
             implementationClass = 'com.github.jasypt.encrypt.JasyptPlugin'
+            tags = ['jasypt', 'encrypt', 'decrypt', 'properties', 'yaml']
         }
     }
+    website = 'https://github.com/ximtech/jasypt-encrypt-plugin'
+    vcsUrl = 'https://github.com/ximtech/jasypt-encrypt-plugin'
 }
 
 java {
@@ -57,7 +54,7 @@ scmVersion {
     }
 }
 
-version scmVersion.version
+version = scmVersion.version
 
 tasks.register("printVersion") {
     doLast {
@@ -69,8 +66,9 @@ dependencies {
     includeLibrary 'org.jasypt:jasypt:1.9.3'
     includeLibrary 'com.tvd12:properties-file:1.1.8'
     // Testing, Spock, Groovy
-    testImplementation "org.codehaus.groovy:groovy-all:3.0.13"
+    testImplementation "org.codehaus.groovy:groovy:3.0.21"
     testImplementation "org.spockframework:spock-core:2.3-groovy-3.0"
+    testImplementation "junit:junit:4.13.2"
     configurations.implementation.extendsFrom(configurations.includeLibrary)
 }
 
