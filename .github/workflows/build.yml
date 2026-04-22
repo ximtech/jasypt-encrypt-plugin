@@ -29,16 +29,10 @@ jobs:
 
     - name: Make Gradlew Executable
       run: chmod +x ./gradlew
-      
-    - name: Show Previous Version
-      run: ./gradlew currentVersion
     
     - name: Build And Test With Gradle Wrapper
       run: ./gradlew clean jacocoTestReport --info --stacktrace
       
-    - name: Create Gradle Release
-      run: ./gradlew release --info --stacktrace
-    
     - name: Code Coverage Report
       uses: codecov/codecov-action@v3
       with:
@@ -46,3 +40,6 @@ jobs:
         files: ./build/reports/jacoco/test/jacocoTestReport.xml
         fail_ci_if_error: true
         verbose: true
+        
+    - name: Create Gradle Release
+      run: ./gradlew release --info --stacktrace
