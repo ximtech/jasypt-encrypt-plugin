@@ -1,9 +1,10 @@
 name: Create Github Release
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_run:
+    workflows: ["build"]
+    types:
+      - completed
 
 permissions:
   contents: write
