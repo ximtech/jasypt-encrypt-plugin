@@ -3,6 +3,7 @@
 [![build](https://github.com/ximtech/jasypt-encrypt-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/ximtech/jasypt-encrypt-plugin/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/ximtech/jasypt-encrypt-plugin/branch/main/graph/badge.svg?token=sHBgjzjp5Y)](https://codecov.io/gh/ximtech/jasypt-encrypt-plugin)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/92143660494d46789a1d5308bed6d17e)](https://app.codacy.com/gh/ximtech/jasypt-encrypt-plugin/dashboard)
+[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.ximtech.jasypt-encrypt-plugin)](https://plugins.gradle.org/plugin/io.github.ximtech.jasypt-encrypt-plugin)
 
 Based on [moberwasserlechner/jasypt-gradle-plugin](https://github.com/moberwasserlechner/jasypt-gradle-plugin)
 
@@ -19,7 +20,7 @@ Check latest version at [Gradle repository](https://plugins.gradle.org/plugin/io
 
 ```groovy
 plugins {
-    id "io.github.ximtech.jasypt-encrypt-plugin" version "1.3.3"
+    id "io.github.ximtech.jasypt-encrypt-plugin" version "ver"
 }
 ```
 
@@ -31,7 +32,7 @@ plugins {
 ```groovy
 buildscript {
     dependencies {
-        classpath files('jasypt-encrypt-plugin-1.3.3.jar')
+        classpath files('jasypt-encrypt-plugin-ver.jar')
     }
 }
 ```
