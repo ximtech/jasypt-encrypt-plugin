@@ -46,30 +46,11 @@ scmVersion {
         initialVersion({ config, position -> "1.0.0" })
     }
     snapshotCreator({ version, position -> "" })
-    
-    versionIncrementer({ context ->
-        def commits = context.repository.log(
-                includes: [context.position.revision],
-                excludes: [context.position.previousRevision]
-        )
-        def gitMessages = commits.findAll { !it.fullMessage.startsWith("Merge") }
-        
-        def bumpType = "patch"
-        gitMessages.each { commit -> 
-            def commitMessage = commit.fullMessage.toLowerCase()
-            if (commitMessage.startsWith("major:") || commitMessage.contains("!:")) {
-                bumpType = "major"
-                
-            } else if (commitMessage.startsWith("feature:") && bumpType != "major") {
-                bumpType = "minor"
-                
-            } else if ((commitMessage.startsWith("fix:") || commitMessage.startsWith("hotfix:")) && bumpType != "patch") {
-                bumpType = "patch"
-            }
-        }
-        
-        return "increment${bumpType.capitalize()}"
-    })
+
+    branchVersionIncrementer = [
+            'main'  : 'incrementPatch',
+            'feature': 'incrementMinor'
+    ]
 }
 
 version scmVersion.version
