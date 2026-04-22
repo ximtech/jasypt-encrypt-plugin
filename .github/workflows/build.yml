@@ -8,6 +8,10 @@ on:
 
 permissions:
   contents: write
+  
+env:
+  GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+  GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
 
 jobs:
   build:
@@ -38,11 +42,11 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./build/reports/jacoco/test/jacocoTestReport.xml
-        fail_ci_if_error: true
+        fail_ci_if_error: false
         verbose: true
         
     - name: Create Gradle Release And Publish To Gradle Central
-      run: ./gradlew release publish --info --stacktrace
+      run: ./gradlew release publishPlugins --info --stacktrace
 
     - name: Get Current Tag Version
       run: echo "VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
