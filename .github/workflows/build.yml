@@ -45,7 +45,7 @@ jobs:
       run: ./gradlew release --info --stacktrace
 
     - name: Get Current Version
-      run: echo "VERSION=$(./gradlew -q currentVersion)" >> $GITHUB_ENV
+      run: echo "VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2

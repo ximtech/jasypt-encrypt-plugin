@@ -59,6 +59,12 @@ scmVersion {
 
 version scmVersion.version
 
+tasks.register("printVersion") {
+    doLast {
+        println project.version
+    }
+}
+
 dependencies {
     includeLibrary 'org.jasypt:jasypt:1.9.3'
     includeLibrary 'com.tvd12:properties-file:1.1.8'
@@ -99,10 +105,4 @@ jacocoTestReport {
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
     dependsOn test // tests are required to run before generating the report
-}
-
-tasks.named("printVersion") {
-    doLast {
-        println project.version
-    }
 }
