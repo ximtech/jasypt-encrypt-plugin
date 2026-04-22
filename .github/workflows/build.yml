@@ -45,7 +45,6 @@ jobs:
       run: ./gradlew release --info --stacktrace
 
     - name: Get Current Version
-      id: version
       run: echo "VERSION=$(./gradlew -q currentVersion)" >> $GITHUB_ENV
 
     - name: Create GitHub Release

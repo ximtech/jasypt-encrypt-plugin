@@ -101,8 +101,8 @@ jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
 }
 
-tasks.named("release") {
+tasks.named("printVersion") {
     doLast {
-        println "Release version: ${project.version}"
+        println project.version
     }
 }
