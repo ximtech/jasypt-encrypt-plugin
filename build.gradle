@@ -51,6 +51,10 @@ scmVersion {
             'main'  : 'incrementPatch',
             'feature': 'incrementMinor'
     ]
+
+    checks {
+        uncommittedChanges = false
+    }
 }
 
 version scmVersion.version
