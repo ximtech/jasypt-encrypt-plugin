@@ -41,5 +41,15 @@ jobs:
         fail_ci_if_error: true
         verbose: true
         
-    - name: Create Gradle Release
+    - name: Create Gradle Release And Axion Version Tag
       run: ./gradlew release --info --stacktrace
+
+    - name: Get Current Version
+      id: version
+      run: echo "VERSION=$(./gradlew -q currentVersion)" >> $GITHUB_ENV
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.VERSION }}
+        generate_release_notes: true
