@@ -44,7 +44,7 @@ jobs:
     - name: Create Gradle Release And Axion Version Tag
       run: ./gradlew release --info --stacktrace
 
-    - name: Get Current Version
+    - name: Get Current Tag Version
       run: echo "VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
     - name: Create GitHub Release
@@ -52,3 +52,6 @@ jobs:
       with:
         tag_name: ${{ env.VERSION }}
         generate_release_notes: true
+
+    - name: Publish To Gradle Central
+      run: ./gradlew publish
