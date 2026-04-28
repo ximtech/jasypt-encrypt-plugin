@@ -43,25 +43,23 @@ scmVersion {
         initialVersion({ config, position -> "1.0.0" })
     }
     snapshotCreator({ version, position -> "" })
-
-    def gitLog = {
-        def result = project.providers.exec {
-            commandLine 'git', 'log', '--pretty'
-        }
-        return result.standardOutput.asText.get()
-                .readLines()
-                .findAll { it?.trim() }
-    }
-
+    
     versionIncrementer { context ->
-        def messages = gitLog()
-        def hasBreaking = messages.any {it.contains('BREAKING CHANGE') || it.contains('!:') }
-        def hasFeature = messages.any { it.startsWith('feat') }
+        def commitMessages = project.providers.exec {commandLine 'git', 'log', '-10', '--pretty=%s'}
+        def lastCommitMessage = commitMessages.standardOutput.asText.get()
+                .readLines()
+                .findAll { it?.trim() && !it.startsWith('Merge') }[0]
+        
+        def hasBreaking = lastCommitMessage.contains('BREAKING CHANGE') || lastCommitMessage.startsWith('feat!:')
+        def hasFeature = lastCommitMessage.startsWith('feat:')
         if (hasBreaking) {
+            println("Inferred a new MAJOR version.")
             return context.currentVersion.incrementMajorVersion()
         } else if (hasFeature) {
+            println("Inferred a new MINOR version.")
             return context.currentVersion.incrementMinorVersion()
         } else {
+            println("Inferred a new PATCH version.")
             return context.currentVersion.incrementPatchVersion()
         }
     }
