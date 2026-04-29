@@ -47,19 +47,15 @@ scmVersion {
     versionIncrementer { context ->
         def commitMessages = project.providers.exec {commandLine 'git', 'log', '-10', '--pretty=%s'}
         def lastCommitMessage = commitMessages.standardOutput.asText.get()
-                .readLines()
-                .findAll { it?.trim() && !it.startsWith('Merge') }[0]
+                .readLines().findAll { it?.trim() && !it.startsWith('Merge') }[0]
         
         def hasBreaking = lastCommitMessage.contains('BREAKING CHANGE') || lastCommitMessage.startsWith('feat!:')
         def hasFeature = lastCommitMessage.startsWith('feat:')
         if (hasBreaking) {
-            println("Inferred a new MAJOR version.")
             return context.currentVersion.incrementMajorVersion()
         } else if (hasFeature) {
-            println("Inferred a new MINOR version.")
             return context.currentVersion.incrementMinorVersion()
         } else {
-            println("Inferred a new PATCH version.")
             return context.currentVersion.incrementPatchVersion()
         }
     }
